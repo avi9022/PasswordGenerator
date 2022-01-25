@@ -82,25 +82,43 @@ def check_password():
     init_program()
 
 
+def check_for_enough_space(chars, num):
+    chars_needed_to_add = 0
+    if not check_lower(chars): chars_needed_to_add += 1
+    if not check_upper(chars): chars_needed_to_add += 1
+    if not check_digits(chars): chars_needed_to_add += 1
+    if not check_special(chars): chars_needed_to_add += 1
+    if num - len(chars) < chars_needed_to_add:
+        return False
+    else:
+        return True
+
+
 def generate():
     new_password = ""
+    # check for valid password length
     while True:
         try:
             num_of_digits = int(input("Please type how long would you like the password to be: "))
         except ValueError:
             print("Please input a valid answer!")
             continue
-        if int(num_of_digits) < 8:
-            print("A strong password should be at least 8 characters!")
+        if num_of_digits < 8 or num_of_digits > 15:
+            print("A strong password should be at least 8 characters and up to 15!")
             continue
         else:
             break
 
-    asked_chars = input("please enter all the characters that must be included: ")
-    while check_space(asked_chars):
-        print("A password cant contain space")
+    while True:
         asked_chars = input("please enter all the characters that must be included: ")
-    new_password += asked_chars
+        if check_space(asked_chars):
+            print("A password cant contain space")
+            continue
+        if not check_for_enough_space(asked_chars, num_of_digits):
+            print("There isn't enough room to add all the necessary characters for a strong password!")
+            continue
+        new_password += asked_chars
+        break
 
     if not check_lower(new_password):
         new_password += random.choice(string.ascii_lowercase)
@@ -111,7 +129,7 @@ def generate():
     if not check_special(new_password):
         new_password += random.choice(string.punctuation)
 
-    while len(new_password) < int(num_of_digits):
+    while len(new_password) < num_of_digits:
         new_password += random.choice(string.ascii_letters)
 
     # randomizing the characters in the new  password
