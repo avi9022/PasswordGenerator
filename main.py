@@ -15,10 +15,11 @@ Your input: """)
 
     elif first_input.lower() == 'generate':
         print(generate())
+        init_program()
     elif first_input.lower() == 'quit':
         print('Thanks for using "The Password Generator 3000"!')
     else:
-        print("Please enter a valid input1!")
+        print("Please enter a valid input!")
         init_program()
 
 
@@ -83,16 +84,22 @@ def check_password():
 
 def generate():
     new_password = ""
-    num_of_digits = input("Please type how long would you like the password to be:")
-    while int(num_of_digits) < 8:
-        print("A strong password should be at least 8 characters!")
-        num_of_digits = input("Please type how long would you like the password to be:")
+    while True:
+        try:
+            num_of_digits = int(input("Please type how long would you like the password to be: "))
+        except ValueError:
+            print("Please input a valid answer!")
+            continue
+        if int(num_of_digits) < 8:
+            print("A strong password should be at least 8 characters!")
+            continue
+        else:
+            break
 
     asked_chars = input("please enter all the characters that must be included: ")
-    for char in asked_chars:
-        if char.isspace():
-            print("A password cant contain space")
-            asked_chars = input("please enter all the characters that must be included: ")
+    while check_space(asked_chars):
+        print("A password cant contain space")
+        asked_chars = input("please enter all the characters that must be included: ")
     new_password += asked_chars
 
     if not check_lower(new_password):
